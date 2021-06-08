@@ -111,11 +111,36 @@ func Logout(ctx *fiber.Ctx) error {
 }
 
 func GetCurrentUser(ctx *fiber.Ctx) error {
-	return nil
+	cookie := ctx.Cookies(cookieName)
+	userId, err := util.ParseToken(cookie)
+	if err != nil {
+		return err
+	}
+	var user models.User
+	err = database.DB.Preload("Role").First(&user, userId).Error
+	if err != nil {
+		return fiber.NewError(fiber.StatusNotFound)
+	}
+	return ctx.JSON(user)
 }
 
 func UpdateCurrentUserInfo(ctx *fiber.Ctx) error {
-	return nil
+	cookie := ctx.Cookies(cookieName)
+	userId, err := util.ParseToken(cookie)
+	if err != nil {
+		return err
+	}
+	var user models.User
+	if err := ctx.BodyParser(&user); err != nil {
+		return err
+	}
+	id, _ := strconv.Atoi(userId)
+	user.Id = uint(id)
+	result := database.DB.Model(&user).Updates(user)
+	if result.Error != nil {
+		return err
+	}
+	return ctx.JSON(user)
 }
 
 func UpdateCurrentUserPassword(ctx *fiber.Ctx) error {
