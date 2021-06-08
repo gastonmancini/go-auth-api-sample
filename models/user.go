@@ -22,5 +22,5 @@ func (user *User) SetPassword(password string) error {
 }
 
 func (user *User) VerifyPassword(password string) error {
-	return bcrypt.CompareHashAndPassword([]byte(password), user.Password)
+	return bcrypt.CompareHashAndPassword(user.Password, []byte(password))
 }

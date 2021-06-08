@@ -3,6 +3,8 @@ package controllers
 import (
 	"go-auth-api-sample/database"
 	"go-auth-api-sample/models"
+	"go-auth-api-sample/util"
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -65,19 +67,27 @@ func Login(ctx *fiber.Ctx) error {
 		Email: loginDto.Email,
 	}
 
-	if err := user.VerifyPassword(loginDto.Password); err != nil {
-		return fiber.ErrUnauthorized
-	}
-
 	result := database.DB.Where(&user).First(&user)
 	if result.Error != nil || result.RowsAffected == 0 {
 		return fiber.ErrUnauthorized
 	}
 
+	if err := user.VerifyPassword(loginDto.Password); err != nil {
+		return fiber.ErrUnauthorized
+	}
+
+	expirationTime := time.Now().Add(24 * time.Hour)
+
+	token, err := util.CreateToken(strconv.Itoa(int(user.Id)), expirationTime)
+
+	if err != nil {
+		return err
+	}
+
 	ctx.Cookie(&fiber.Cookie{
 		Name:     cookieName,
-		Value:    "some-token", // TODO
-		Expires:  time.Now().Add(24 * time.Hour),
+		Value:    token,
+		Expires:  expirationTime,
 		HTTPOnly: true,
 		SameSite: "lax",
 	})
@@ -90,7 +100,7 @@ func Login(ctx *fiber.Ctx) error {
 func Logout(ctx *fiber.Ctx) error {
 	ctx.Cookie(&fiber.Cookie{
 		Name:     cookieName,
-		Expires:  time.Now().Add(-(22 * time.Hour)), // Set expiry date to the past
+		Expires:  time.Now().Add(-(2 * time.Hour)), // Set expiry date to the past
 		HTTPOnly: true,
 		SameSite: "lax",
 	})
