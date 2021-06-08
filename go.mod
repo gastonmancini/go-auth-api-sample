@@ -10,4 +10,6 @@ require (
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/pelletier/go-toml v1.9.2 // indirect
 	golang.org/x/sys v0.0.0-20210603125802-9665404d3644 // indirect
+	gorm.io/driver/mysql v1.1.0 // indirect
+	gorm.io/gorm v1.21.10 // indirect
 )
