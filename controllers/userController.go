@@ -56,3 +56,19 @@ func UpdateUser(ctx *fiber.Ctx) error {
 	}
 	return ctx.JSON(user)
 }
+
+func DeleteUser(ctx *fiber.Ctx) error {
+	userId, err := ctx.ParamsInt("id")
+	if err != nil {
+		return err
+	}
+	result := database.DB.Delete(&models.User{}, userId)
+	if result.Error != nil {
+		return err
+	}
+	if result.RowsAffected == 0 {
+		return fiber.NewError(fiber.StatusNotFound)
+	}
+	ctx.Status(fiber.StatusNoContent)
+	return nil
+}
