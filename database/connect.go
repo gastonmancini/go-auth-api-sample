@@ -7,6 +7,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var DB *gorm.DB
+
 func Connect() {
 	dsn := "root:admin@tcp(127.0.0.1:3306)/go-auth-api-sample?charset=utf8mb4&parseTime=True&loc=Local"
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -14,4 +16,5 @@ func Connect() {
 		panic("failed to connect to the database")
 	}
 	database.AutoMigrate(&models.Permission{}, &models.Role{}, &models.User{})
+	DB = database
 }
