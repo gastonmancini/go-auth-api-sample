@@ -7,5 +7,6 @@ import (
 )
 
 func Setup(app *fiber.App) {
-	app.Get("/api/ping", controllers.Ping)
+	app.Get("/api/users", controllers.AllUsers)
+	app.Get("/api/users/:id", controllers.GetUser)
 }
