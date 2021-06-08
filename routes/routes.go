@@ -7,4 +7,5 @@ import (
 func Setup(app *fiber.App) {
 	SetupUserRoutes(app)
 	SetupRoleRoutes(app)
+	SetupPermissionRoutes(app)
 }
