@@ -1,18 +1,15 @@
 package main
 
 import (
+	"go-auth-api-sample/routes"
+
 	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
 	app := fiber.New()
 
-	app.Get("/api/ping", ping)
+	routes.Setup(app)
 
 	app.Listen(":8000")
-}
-
-func ping(ctx *fiber.Ctx) error {
-	ctx.WriteString("pong")
-	return nil
 }
