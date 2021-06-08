@@ -25,3 +25,17 @@ func GetUser(ctx *fiber.Ctx) error {
 	}
 	return ctx.JSON(user)
 }
+
+func CreateUser(ctx *fiber.Ctx) error {
+	var user models.User
+	if err := ctx.BodyParser(&user); err != nil {
+		return err
+	}
+	const DefaultPasswordForNewUsers = "1234"
+	user.SetPassword(DefaultPasswordForNewUsers)
+	result := database.DB.Create(&user)
+	if result.Error != nil {
+		return result.Error
+	}
+	return ctx.JSON(user)
+}

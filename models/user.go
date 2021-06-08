@@ -1,5 +1,7 @@
 package models
 
+import "golang.org/x/crypto/bcrypt"
+
 type User struct {
 	Id        uint   `gorm:"primaryKey" json:"id"`
 	FirstName string `gorm:"not null" json:"firstName"`
@@ -8,4 +10,13 @@ type User struct {
 	Password  []byte `gorm:"not null" json:"-"`
 	RoleId    uint   `gorm:"not null" json:"roleId"`
 	Role      Role   `gorm:"foreignKey:RoleId"`
+}
+
+func (user *User) SetPassword(password string) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	if err != nil {
+		return err
+	}
+	user.Password = hashedPassword
+	return nil
 }
