@@ -39,3 +39,20 @@ func CreateUser(ctx *fiber.Ctx) error {
 	}
 	return ctx.JSON(user)
 }
+
+func UpdateUser(ctx *fiber.Ctx) error {
+	userId, err := ctx.ParamsInt("id")
+	if err != nil {
+		return err
+	}
+	var user models.User
+	if err := ctx.BodyParser(&user); err != nil {
+		return err
+	}
+	user.Id = uint(userId)
+	result := database.DB.Model(&user).Updates(user)
+	if result.Error != nil {
+		return err
+	}
+	return ctx.JSON(user)
+}
