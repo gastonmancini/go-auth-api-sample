@@ -4,6 +4,7 @@ import (
 	"go-auth-api-sample/database"
 	"go-auth-api-sample/middlewares"
 	"go-auth-api-sample/models"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -12,9 +13,10 @@ func AllRoles(ctx *fiber.Ctx) error {
 	if err := middlewares.IsUserAuthorized(ctx, "roles"); err != nil {
 		return err
 	}
-	var roles []models.Role
-	database.DB.Preload("Permissions").Find(&roles)
-	return ctx.JSON(roles)
+	page, _ := strconv.Atoi(ctx.Query("page", "1"))
+	return ctx.JSON(
+		models.Paginate(database.DB, &models.Role{}, page),
+	)
 }
 
 func GetRole(ctx *fiber.Ctx) error {
