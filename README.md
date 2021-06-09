@@ -1,6 +1,6 @@
 # go-auth-api-sample
 
-This is just an example on how to implement a simple API in Go, with basic authentication using JWT tokens and user management capabilities.
+This is just an example of how to implement a simple API in Go, with basic authentication using JWT tokens and user management capabilities.
 
 ## 💡 Motivation
 
@@ -42,7 +42,7 @@ POST /api/me/image
 
 ## 🧬 Development
 
-The application is written purely in golang. MySql is used to persiste the application data.
+The application is written purely in golang. MySql is used to persist the application data.
 
 ### Layout
 
@@ -71,8 +71,6 @@ The application is written purely in golang. MySql is used to persiste the appli
 │   ├── roleRoutes.go
 │   └── uerRoutes.go
 ├── uploads
-├── third_party
-│   └── README.md
 └── util
 │   ├── cookie.go
 │   └── jwt.go
