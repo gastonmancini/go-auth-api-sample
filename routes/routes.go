@@ -16,4 +16,7 @@ func Setup(app *fiber.App) {
 	SetupUserRoutes(app)
 	SetupRoleRoutes(app)
 	SetupPermissionRoutes(app)
+
+	// Serve static folders so we can access the uploaded images
+	app.Static("/api/uploads", "./uploads") // The first param is the URL and the second is the folder where is stored
 }

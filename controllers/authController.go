@@ -4,10 +4,12 @@ import (
 	"go-auth-api-sample/database"
 	"go-auth-api-sample/models"
 	"go-auth-api-sample/util"
+	"path/filepath"
 	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 // This method allows a user to self-register.
@@ -143,6 +145,12 @@ func UpdateCurrentUserInfo(ctx *fiber.Ctx) error {
 
 func UpdateCurrentUserPassword(ctx *fiber.Ctx) error {
 
+	cookie := ctx.Cookies(util.CookieName)
+	userId, err := util.ParseToken(cookie)
+	if err != nil {
+		return err
+	}
+
 	updatePasswordDto := struct {
 		Password        string `json:"password"`
 		PasswordConfirm string `json:"passwordConfirm"`
@@ -159,12 +167,6 @@ func UpdateCurrentUserPassword(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	cookie := ctx.Cookies(util.CookieName)
-	userId, err := util.ParseToken(cookie)
-	if err != nil {
-		return err
-	}
-
 	id, _ := strconv.Atoi(userId)
 	user := models.User{
 		Id: uint(id),
@@ -176,5 +178,43 @@ func UpdateCurrentUserPassword(ctx *fiber.Ctx) error {
 	}
 	return ctx.JSON(fiber.Map{
 		"message": "password successfully changed",
+	})
+}
+
+func UpdateCurrentUserProfileImage(ctx *fiber.Ctx) error {
+	cookie := ctx.Cookies(util.CookieName)
+	userId, err := util.ParseToken(cookie)
+	if err != nil {
+		return err
+	}
+
+	form, err := ctx.MultipartForm()
+	if err != nil {
+		return err
+	}
+
+	files := form.File["image"] // This is the key of the file when we send it in the form-data request body
+	filename := uuid.New().String()
+
+	// File format = guid.extension
+	for _, file := range files {
+		filename = filename + filepath.Ext(file.Filename)
+		if err := ctx.SaveFile(file, "./uploads/"+filename); err != nil {
+			return err
+		}
+	}
+
+	id, _ := strconv.Atoi(userId)
+	user := models.User{
+		Id:       uint(id),
+		ImageUrl: ctx.BaseURL() + "/api/uploads/" + filename,
+	}
+	result := database.DB.Model(&user).Updates(user)
+	if result.Error != nil {
+		return err
+	}
+
+	return ctx.JSON(fiber.Map{
+		"url": user.ImageUrl,
 	})
 }

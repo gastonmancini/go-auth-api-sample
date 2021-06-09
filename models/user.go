@@ -10,6 +10,7 @@ type User struct {
 	FirstName string `gorm:"not null" json:"firstName"`
 	LastName  string `gorm:"not null" json:"lastName"`
 	Email     string `gorm:"unique" json:"email"`
+	ImageUrl  string `json:"image" json:"imageUrl"`
 	Password  []byte `gorm:"not null" json:"-"`
 	RoleId    uint   `gorm:"not null" json:"roleId"`
 	Role      Role   `gorm:"foreignKey:RoleId"`

@@ -16,4 +16,5 @@ func SetupAuthRoutes(app *fiber.App) {
 	app.Get("/api/me", controllers.GetCurrentUser)
 	app.Put("/api/me", controllers.UpdateCurrentUserInfo)
 	app.Put("/api/me/password", controllers.UpdateCurrentUserPassword)
+	app.Post("/api/me/image", controllers.UpdateCurrentUserProfileImage)
 }
