@@ -144,5 +144,39 @@ func UpdateCurrentUserInfo(ctx *fiber.Ctx) error {
 }
 
 func UpdateCurrentUserPassword(ctx *fiber.Ctx) error {
-	return nil
+
+	updatePasswordDto := struct {
+		Password        string `json:"password"`
+		PasswordConfirm string `json:"passwordConfirm"`
+	}{}
+
+	if updatePasswordDto.Password != updatePasswordDto.PasswordConfirm {
+		ctx.Status(fiber.ErrBadRequest.Code)
+		return ctx.JSON(fiber.Map{
+			"error": "passwords do to match",
+		})
+	}
+
+	if err := ctx.BodyParser(&updatePasswordDto); err != nil {
+		return err
+	}
+
+	cookie := ctx.Cookies(cookieName)
+	userId, err := util.ParseToken(cookie)
+	if err != nil {
+		return err
+	}
+
+	id, _ := strconv.Atoi(userId)
+	user := models.User{
+		Id: uint(id),
+	}
+	user.SetPassword(updatePasswordDto.Password)
+	result := database.DB.Model(&user).Updates(user)
+	if result.Error != nil {
+		return err
+	}
+	return ctx.JSON(fiber.Map{
+		"message": "password successfully changed",
+	})
 }
