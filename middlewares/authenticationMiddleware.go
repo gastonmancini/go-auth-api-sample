@@ -7,7 +7,7 @@ import (
 )
 
 func IsUserAuthenticated(ctx *fiber.Ctx) error {
-	token := ctx.Cookies("go-auth-api-sample-token")
+	token := ctx.Cookies(util.CookieName)
 	if _, err := util.ParseToken(token); err != nil {
 		return fiber.ErrUnauthorized
 	}

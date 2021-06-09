@@ -2,18 +2,25 @@ package controllers
 
 import (
 	"go-auth-api-sample/database"
+	"go-auth-api-sample/middlewares"
 	"go-auth-api-sample/models"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func AllUsers(ctx *fiber.Ctx) error {
+	if err := middlewares.IsUserAuthorized(ctx, "users"); err != nil {
+		return err
+	}
 	var users []models.User
 	database.DB.Preload("Role").Find(&users)
 	return ctx.JSON(users)
 }
 
 func GetUser(ctx *fiber.Ctx) error {
+	if err := middlewares.IsUserAuthorized(ctx, "users"); err != nil {
+		return err
+	}
 	userId, err := ctx.ParamsInt("id")
 	if err != nil {
 		return err
@@ -27,6 +34,9 @@ func GetUser(ctx *fiber.Ctx) error {
 }
 
 func CreateUser(ctx *fiber.Ctx) error {
+	if err := middlewares.IsUserAuthorized(ctx, "users"); err != nil {
+		return err
+	}
 	var user models.User
 	if err := ctx.BodyParser(&user); err != nil {
 		return err
@@ -41,6 +51,9 @@ func CreateUser(ctx *fiber.Ctx) error {
 }
 
 func UpdateUser(ctx *fiber.Ctx) error {
+	if err := middlewares.IsUserAuthorized(ctx, "users"); err != nil {
+		return err
+	}
 	userId, err := ctx.ParamsInt("id")
 	if err != nil {
 		return err
@@ -58,6 +71,9 @@ func UpdateUser(ctx *fiber.Ctx) error {
 }
 
 func DeleteUser(ctx *fiber.Ctx) error {
+	if err := middlewares.IsUserAuthorized(ctx, "users"); err != nil {
+		return err
+	}
 	userId, err := ctx.ParamsInt("id")
 	if err != nil {
 		return err

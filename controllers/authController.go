@@ -51,8 +51,6 @@ func Register(ctx *fiber.Ctx) error {
 	})
 }
 
-const cookieName = "go-auth-api-sample-token"
-
 func Login(ctx *fiber.Ctx) error {
 	loginDto := struct {
 		Email    string `json:"email"`
@@ -85,7 +83,7 @@ func Login(ctx *fiber.Ctx) error {
 	}
 
 	ctx.Cookie(&fiber.Cookie{
-		Name:     cookieName,
+		Name:     util.CookieName,
 		Value:    token,
 		Expires:  expirationTime,
 		HTTPOnly: true,
@@ -99,7 +97,7 @@ func Login(ctx *fiber.Ctx) error {
 
 func Logout(ctx *fiber.Ctx) error {
 	ctx.Cookie(&fiber.Cookie{
-		Name:     cookieName,
+		Name:     util.CookieName,
 		Expires:  time.Now().Add(-(2 * time.Hour)), // Set expiry date to the past
 		HTTPOnly: true,
 		SameSite: "lax",
@@ -111,7 +109,7 @@ func Logout(ctx *fiber.Ctx) error {
 }
 
 func GetCurrentUser(ctx *fiber.Ctx) error {
-	cookie := ctx.Cookies(cookieName)
+	cookie := ctx.Cookies(util.CookieName)
 	userId, err := util.ParseToken(cookie)
 	if err != nil {
 		return err
@@ -125,7 +123,7 @@ func GetCurrentUser(ctx *fiber.Ctx) error {
 }
 
 func UpdateCurrentUserInfo(ctx *fiber.Ctx) error {
-	cookie := ctx.Cookies(cookieName)
+	cookie := ctx.Cookies(util.CookieName)
 	userId, err := util.ParseToken(cookie)
 	if err != nil {
 		return err
@@ -161,7 +159,7 @@ func UpdateCurrentUserPassword(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	cookie := ctx.Cookies(cookieName)
+	cookie := ctx.Cookies(util.CookieName)
 	userId, err := util.ParseToken(cookie)
 	if err != nil {
 		return err
