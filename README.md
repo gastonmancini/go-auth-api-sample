@@ -1,15 +1,14 @@
 # go-auth-api-sample
 
-This is just an example of how to implement a simple API in Go, with basic authentication using JWT tokens and user management capabilities.
+This is just an example of how to implement a simple API in Go, with basic authentication using JWT tokens and user management.
 
 ## 💡 Motivation
 
 The solution is pretty naive and was developed only for trying out [Fiber](https://gofiber.io/) and [GORM](https://gorm.io/).
-Also the idea is leave the API ready to be consumed by frontend apps to be developed in newer versions of React and Angular (just to try them out too :)).
 
 ## 👀 Overview
 
-In short, the API allows you to register new users, login users, get and edit users, get and edit user roles, get permissions, get and edit user profile, change current user passwords and upload user profile image.
+In short, the API allows you to register new users, login users, manage users, user roles, permissions, user profile, change passwords and upload user profile images.
 
 Endpoints:
 
@@ -97,7 +96,7 @@ A brief description of the layout:
 ## 📖 Database
 
 * Uses [GORM](https://gorm.io/index.html) as ORM and MySql.
-* GORM Auto Migration is enabled. The database schema is created by the app.
+* GORM Auto Migration is enabled. The database schema is automatically created and updated by the app.
 * Refer to this [link](https://github.com/go-sql-driver/mysql#dsn-data-source-name) for details on how to set the data source name
 * Example: dsn := "user:pass@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
 * Tables created in the db: users, roles, permissions, role_permissions
